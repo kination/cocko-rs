@@ -1,7 +1,8 @@
 extern crate reqwest;
 
-
 mod client;
+use client::Client;
+
 
 
 #[cfg(test)]
@@ -15,6 +16,8 @@ mod tests {
 
     #[test]
     fn it_calls() {
-        client::call_func();
+        // client::call_func();
+        let client = Client::ping();
+
     }
 }
