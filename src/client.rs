@@ -1,30 +1,37 @@
 use std::io::Read;
 use std::concat;
-use reqwest::Error;
+use json::JsonValue;
+// use serde_json::{Result, Value};
+
+const API_BASE_URL: &'static str  = "https://api.coingecko.com/api/v3";
 
 pub struct Client {
 
 }
 
+// TODO: Define error types
+pub enum ErrorType {
+    UNDEFINED,
+}
+
 impl Client {
     
-    pub fn ping() -> String {
-        let api_domain = "https://api.coingecko.com/api/v3";
-        let api = format!("{}{}", api_domain, "/ping");
+    pub fn ping() -> Result<JsonValue, ErrorType> {
+        const PING_URL: &'static str = "/ping";
+        let api = format!("{}{}", API_BASE_URL, PING_URL);
 
         let resp = reqwest::get(&api);
         let mut res = match resp {
             Ok(res) => res,
-            Err(Error) => return String::from("Error!!")
+            Err(Error) => return Err(ErrorType::UNDEFINED)
         };
 
         let mut body = String::new();
         res.read_to_string(&mut body);
+        let parsed = json::parse(&body).unwrap();
+        println!("Body 2: {:?}", parsed);
 
-        println!("Status: {}", res.status());
-        println!("Headers:\n{:#?}", res.headers());
-
-        return String::from("OK")
+        return Ok(parsed)
     }
 
     fn coin_list() -> String {
