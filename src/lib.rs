@@ -3,8 +3,10 @@ extern crate reqwest;
 extern crate json;
 
 mod client;
-use client::Client;
+mod simple;
+mod coins;
 
+use client::CockoClient;
 
 
 #[cfg(test)]
@@ -19,12 +21,19 @@ mod tests {
     #[test]
     fn call_ping() {
         // client::call_func();
-        let client = Client::ping();
+        /*
+        let client = CockoClient::ping();
 
         match client {
             Ok(result) => println!("Ping success: {:?}", result["gecko_says"]),
             Err(msg) => println!("Error!!")
         }
+        */
+    }
+
+    #[test]
+    fn call_simple_price() {
+        let client = CockoClient::simple_price();
     }
 
 
