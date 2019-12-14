@@ -1,3 +1,5 @@
-pub enum CoinType {
-
+pub struct CoinListItem {
+  id: String,
+  symbol: String,
+  name: String
 }
