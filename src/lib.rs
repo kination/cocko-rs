@@ -1,6 +1,6 @@
 extern crate reqwest;
 #[macro_use]
-extern crate json;
+// extern crate json;
 extern crate serde_derive;
 extern crate serde_json;
 
@@ -17,28 +17,17 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-
-    #[test]
     fn call_ping() {
         // let client = CockoClient::ping();
-        // client::call_func();
-        /*
-        let client = CockoClient::ping();
-
-        match client {
-            Ok(result) => println!("Ping success: {:?}", result["gecko_says"]),
-            Err(msg) => println!("Error!!")
-        }
-        */
     }
 
     #[test]
     fn call_simple_price() {
-        let client = CockoClient::simple_price("01coin", CurrencyType::BTC);
+        // let client = CockoClient::simple_price("01coin", CurrencyType::BTC);
     }
 
-
+    #[test]
+    fn call_coin_list() {
+        let coin_list = CockoClient::coin_list();
+    }
 }
