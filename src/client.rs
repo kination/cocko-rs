@@ -9,6 +9,8 @@ use reqwest::Client;
 
 use crate::simple::CurrencyType;
 use crate::coins::CoinListItem;
+use crate::events::{EventResponseParam};
+use crate::exchange::{ExchangesItem, ExchangesMarketItem};
 
 
 const API_BASE_URL: &'static str  = "https://api.coingecko.com/api/v3";
@@ -84,9 +86,9 @@ impl CockoClient {
     /// Call 'coins/list' API
     ///
     ///
-    pub fn coin_list() -> Result<Vec<CoinListItem>, serde_json::Error> {
-        const PING_URL: &'static str = "/coins/list";
-        let api = format!("{}{}", API_BASE_URL, PING_URL);
+    pub fn coins_list() -> Result<Vec<CoinListItem>, serde_json::Error> {
+        const COINS_LIST: &'static str = "/coins/list";
+        let api = format!("{}{}", API_BASE_URL, COINS_LIST);
 
         let mut res = reqwest::get(&api).expect("Error on request");
 
@@ -95,6 +97,51 @@ impl CockoClient {
         let coin_list_map: Vec<CoinListItem> = serde_json::from_str(&body)?;
         
         return Ok(coin_list_map)
+    }
+
+    /// Call '/exchanges'
+    ///
+    ///
+    pub fn exchanges () -> Result<Vec<ExchangesItem>, serde_json::Error> {
+        const EXCHANGES: &'static str = "/exchanges";
+        let api = format!("{}{}", API_BASE_URL, EXCHANGES);
+        let mut res = reqwest::get(&api).expect("Error on request");
+        let mut body = String::new();
+
+        res.read_to_string(&mut body);
+        let exchanges: Vec<ExchangesItem> = serde_json::from_str(&body).unwrap();
+
+        return Ok(exchanges)
+    }
+
+    /// Call '/exchanges/list'
+    ///
+    ///
+    pub fn exchange_list() -> Result<Vec<ExchangesMarketItem>, serde_json::Error> {
+        const EXCHANGES_LIST: &'static str = "/exchanges/list";
+        let api = format!("{}{}", API_BASE_URL, EXCHANGES_LIST);
+        let mut res = reqwest::get(&api).expect("Error on request");
+        let mut body = String::new();
+
+        res.read_to_string(&mut body);
+        let exchange_list: Vec<ExchangesMarketItem> = serde_json::from_str(&body).unwrap();
+
+        return Ok(exchange_list)
+    }
+
+    /// Call '/events'
+    ///
+    ///
+    pub fn events() -> Result<EventResponseParam, serde_json::Error> {
+        const EVENTS: &'static str = "/events";
+        let api = format!("{}{}", API_BASE_URL, EVENTS);
+        let mut res = reqwest::get(&api).expect("Error on request");
+        let mut body = String::new();
+
+        res.read_to_string(&mut body);
+        let events: EventResponseParam = serde_json::from_str(&body).unwrap();
+        println!("Event item 1: {:?}", events.data[0]);
+        return Ok(events)
     }
 
     /// TODO:

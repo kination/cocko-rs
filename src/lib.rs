@@ -5,8 +5,10 @@ extern crate serde_derive;
 extern crate serde_json;
 
 mod client;
-mod simple;
 mod coins;
+mod exchange;
+mod events;
+mod simple;
 
 use client::CockoClient;
 use simple::CurrencyType;
@@ -17,17 +19,13 @@ mod tests {
     use super::*;
 
     #[test]
-    fn call_ping() {
+    fn call_test() {
         // let client = CockoClient::ping();
+        let coin_list = CockoClient::events();
     }
 
     #[test]
     fn call_simple_price() {
         // let client = CockoClient::simple_price("01coin", CurrencyType::BTC);
-    }
-
-    #[test]
-    fn call_coin_list() {
-        let coin_list = CockoClient::coin_list();
     }
 }
