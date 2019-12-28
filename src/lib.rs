@@ -7,6 +7,7 @@ extern crate serde_json;
 mod client;
 mod coins;
 mod exchange;
+mod finance;
 mod events;
 mod simple;
 
@@ -21,7 +22,7 @@ mod tests {
     #[test]
     fn call_test() {
         // let client = CockoClient::ping();
-        let coin_list = CockoClient::events();
+        let _coin_list = CockoClient::finance_platforms();
     }
 
     #[test]
