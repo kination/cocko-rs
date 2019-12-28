@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use serde::{Deserialize};
 
 #[derive(Debug, Deserialize)]
@@ -20,4 +21,17 @@ pub struct ExchangesItem {
 pub struct ExchangesMarketItem {
     id: String,
     name: String
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ExchangeRates {
+    rates: HashMap<String, ExchangeRatesItem>
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ExchangeRatesItem {
+    name: String,
+    unit: String,
+    value: f64,
+    r#type: String
 }

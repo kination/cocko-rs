@@ -1,4 +1,5 @@
 use std::io::Read;
+use std::collections::HashMap;
 
 use serde::{Deserialize};
 use serde_json::{Value};
@@ -7,7 +8,7 @@ use crate::simple::CurrencyType;
 use crate::coins::CoinListItem;
 use crate::events::{EventResponseParam};
 use crate::finance::FinancePlatformItem;
-use crate::exchange::{ExchangesItem, ExchangesMarketItem};
+use crate::exchange::{ExchangesItem, ExchangesMarketItem, ExchangeRates};
 
 const API_BASE_URL: &str  = "https://api.coingecko.com/api/v3";
 
@@ -18,10 +19,6 @@ pub struct CockoClient {
 #[derive(Debug, Deserialize)]
 struct PingData {
     gecko_says: String
-}
-
-struct CoinData {
-    
 }
 
 // TODO: Define error types
@@ -46,36 +43,54 @@ impl CockoClient {
             Err(_error) => return Err(ErrorType::UNDEFINED)
         };
 
-        println!("Body 2: {:?}", ping_data.gecko_says);
-
         Ok("parsed".to_string())
     }
 
     /// Call 'simple/price' API
     ///
     ///
-    pub fn simple_price(_ids: &str, _vs_currencies: CurrencyType) 
-    -> Result<String, serde_json::Error> {
+    pub fn simple_price(_ids: &str, _vs_currencies: &str) -> Result<HashMap<String, HashMap<String, f64>>, serde_json::Error> {
         const API_SIMPLE_PRICE: &str = "/simple/price";
         let api = format!("{}{}", API_BASE_URL, API_SIMPLE_PRICE);
         let mut res = reqwest::Client::new().get(&api)
-                    .query(&[("ids", "01coin"),("vs_currencies", "btc")])
+                    .query(&[("ids", _ids),("vs_currencies", _vs_currencies)])
                     .send().unwrap();
 
         let mut body = String::new();
         res.read_to_string(&mut body);
-        let map: Value = serde_json::from_str(&body)?;
-        println!("Body 2: {}", map["01coin"]["btc"]);
+        let price: HashMap<String, HashMap<String, f64>> = serde_json::from_str(&body)?;
         
-        Ok("parsed".to_string())
+        Ok(price)
     }
 
     /// Call 'simple/token_price/{id}' API
     ///
     ///
-    pub fn simple_token_price_by_id(token_id: &str) {
-        const API_SIMPLE_PRICE: &str = "/simple/token_price";
-        let _api = format!("{}{}/{}", API_BASE_URL, API_SIMPLE_PRICE, token_id);
+    pub fn simple_token_price_by_id(token_id: &str, contract_addresses: &str, vs_currencies: &str) -> Result<HashMap<String, HashMap<String, f64>>, serde_json::Error> {
+        const API_SIMPLE_TOKEN_PRICE: &str = "/simple/token_price";
+        let _api = format!("{}{}/{}", API_BASE_URL, API_SIMPLE_TOKEN_PRICE, token_id);
+
+        let mut res = reqwest::Client::new().get(&_api)
+                    .query(&[
+                        ("contract_addresses", contract_addresses),
+                        ("vs_currencies", vs_currencies)
+                    ])
+                    .send().unwrap();
+
+        let mut body = String::new();
+        res.read_to_string(&mut body);
+        
+        let price: HashMap<String, HashMap<String, f64>> = serde_json::from_str(&body)?;
+        
+        Ok(price)
+    }
+
+     /// Call 'simple/supported_vs_currencies' API
+    ///
+    ///
+    pub fn simple_supported_vs_currencies() {
+        const API_SIMPLE_SUPPORTED_CURRENCIES: &str = "/simple/supported_vs_currencies";
+        let _api = format!("{}{}", API_BASE_URL, API_SIMPLE_SUPPORTED_CURRENCIES);
         
         // TODO:
     }
@@ -122,6 +137,21 @@ impl CockoClient {
 
         res.read_to_string(&mut body);
         let exchange_list: Vec<ExchangesMarketItem> = serde_json::from_str(&body).unwrap();
+
+        Ok(exchange_list)
+    }
+
+    /// Call '/exchange_rates'
+    ///
+    ///
+    pub fn exchange_rates() -> Result<ExchangeRates, serde_json::Error> {
+        const EXCHANGE_RATES: &str = "/exchange_rates";
+        let api = format!("{}{}", API_BASE_URL, EXCHANGE_RATES);
+        let mut res = reqwest::get(&api).expect("Error on request");
+        let mut body = String::new();
+
+        res.read_to_string(&mut body);
+        let exchange_list: ExchangeRates = serde_json::from_str(&body).unwrap();
 
         Ok(exchange_list)
     }
