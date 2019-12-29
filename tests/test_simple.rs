@@ -14,7 +14,7 @@ mod test_simple {
 
     #[test]
     fn call_simple_token_price_by_id() {
-        let address = "0xe41d2489571d322189246dafa5ebde1f4699f498";
+        let address = "???";
         let vs_currency = "eth";
         let _simple_token_price = CockoClient::simple_token_price_by_id("ethereum", address, vs_currency).unwrap();
         assert_eq!(_simple_token_price.contains_key(address), true);
