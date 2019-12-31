@@ -3,23 +3,23 @@ use serde::{Deserialize};
 #[derive(Debug, Deserialize)]
 pub struct EventResponseParam {
     pub data: Vec<EventDataItem>,
-    count: i32,
-    page: i32
+    pub count: i32,
+    pub page: i32
 }
 
 #[derive(Debug, Deserialize)]
 pub struct EventDataItem {
-    r#type: String,
-    title: String,
-    description: String,
-    organizer: String,
-    start_date: String,
-    end_date: String,
-    website: String,
-    email: String,
-    venue: String,
-    address: String,
-    city: String,
-    country: String,
-    screenshot: String
+    pub r#type: String,
+    pub title: String,
+    pub description: String,
+    pub organizer: String,
+    pub start_date: String,
+    pub end_date: String,
+    pub website: String,
+    pub email: String,
+    pub venue: String,
+    pub address: String,
+    pub city: String,
+    pub country: String,
+    pub screenshot: String
 }

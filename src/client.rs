@@ -5,7 +5,14 @@ use serde::{Deserialize};
 use serde_json::{Value};
 
 use crate::simple::CurrencyType;
-use crate::coins::CoinListItem;
+use crate::coins::{
+    CoinsData, 
+    CoinsHistoryData, 
+    CoinsListItem, 
+    CoinsMarketChartData, 
+    CoinsMarketItem, 
+    CoinsTickerData
+};
 use crate::events::{EventResponseParam};
 use crate::finance::FinancePlatformItem;
 use crate::exchange::{ExchangesItem, ExchangesMarketItem, ExchangeRates};
@@ -98,7 +105,7 @@ impl CockoClient {
     /// Call 'coins/list' API
     ///
     ///
-    pub fn coins_list() -> Result<Vec<CoinListItem>, serde_json::Error> {
+    pub fn coins_list() -> Result<Vec<CoinsListItem>, serde_json::Error> {
         const COINS_LIST: &str = "/coins/list";
         let api = format!("{}{}", API_BASE_URL, COINS_LIST);
 
@@ -106,10 +113,101 @@ impl CockoClient {
 
         let mut body = String::new();
         res.read_to_string(&mut body);
-        let coin_list_map: Vec<CoinListItem> = serde_json::from_str(&body)?;
+        let coin_list_map: Vec<CoinsListItem> = serde_json::from_str(&body)?;
         
         Ok(coin_list_map)
     }
+
+    /// Call 'coins/market' API
+    ///
+    ///
+    pub fn coins_markets(vs_currency: &str) -> Result<Vec<CoinsMarketItem>, serde_json::Error> {
+        const COINS_MARKETS: &str = "/coins/markets";
+        let api = format!("{}{}", API_BASE_URL, COINS_MARKETS);
+
+        let mut res = reqwest::Client::new().get(&api).query(&[
+            ("vs_currency", vs_currency)
+        ])
+        .send().unwrap();
+
+        let mut body = String::new();
+        res.read_to_string(&mut body);
+        let coin_list_map: Vec<CoinsMarketItem> = serde_json::from_str(&body)?;
+        
+        Ok(coin_list_map)
+    }
+
+    /// Call 'coins/{id}' API
+    ///
+    ///
+    pub fn coins_with_id(id: &str) -> Result<CoinsData, serde_json::Error> {
+        const COINS: &str = "/coins";
+        let api = format!("{}{}/{}", API_BASE_URL, COINS, id);
+
+        let mut res = reqwest::get(&api).expect("Error on request");
+
+        let mut body = String::new();
+        res.read_to_string(&mut body);
+        let coin_data: CoinsData = serde_json::from_str(&body)?;
+        
+        Ok(coin_data)
+    }
+
+    /// Call 'coins/{id}/tickers' API
+    ///
+    ///
+    pub fn coins_with_id_tickers(id: &str) -> Result<CoinsTickerData, serde_json::Error> {
+        const COINS: &str = "/coins";
+        const TICKER: &str = "/tickers";
+        let api = format!("{}{}/{}{}", API_BASE_URL, COINS, id, TICKER);
+        let mut res = reqwest::get(&api).expect("Error on request");
+
+        let mut body = String::new();
+        res.read_to_string(&mut body);
+        let coin_ticker_data: CoinsTickerData = serde_json::from_str(&body)?;
+        
+        Ok(coin_ticker_data)
+    }
+
+    /// Call 'coins/{id}/history' API
+    ///
+    ///
+    pub fn coins_with_id_history(id: &str, date: &str) -> Result<CoinsHistoryData, serde_json::Error> {
+        const COINS: &str = "/coins";
+        const HISTORY: &str = "/history";
+        let api = format!("{}{}/{}{}", API_BASE_URL, COINS, id, HISTORY);
+        let mut res = reqwest::Client::new().get(&api).query(&[
+            ("date", date)
+        ])
+        .send().unwrap();
+
+        let mut body = String::new();
+        res.read_to_string(&mut body);
+        let coin_history_data: CoinsHistoryData = serde_json::from_str(&body)?;
+        
+        Ok(coin_history_data)
+    }
+
+    /// Call 'coins/{id}/market_chart' API
+    ///
+    ///
+    pub fn coins_with_id_market_chart(id: &str, vs_currency: &str, days: &str) -> Result<CoinsMarketChartData, serde_json::Error> {
+        const COINS: &str = "/coins";
+        const MARKET_CHART: &str = "/market_chart";
+        let api = format!("{}{}/{}{}", API_BASE_URL, COINS, id, MARKET_CHART);
+        let mut res = reqwest::Client::new().get(&api).query(&[
+            ("vs_currency", vs_currency),
+            ("days", days),
+        ])
+        .send().unwrap();
+
+        let mut body = String::new();
+        res.read_to_string(&mut body);
+        let coin_market_chart_data: CoinsMarketChartData = serde_json::from_str(&body)?;
+        
+        Ok(coin_market_chart_data)
+    }
+
 
     /// Call '/exchanges'
     ///
