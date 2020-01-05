@@ -13,7 +13,11 @@ use crate::coins::{
     CoinsMarketItem, 
     CoinsTickerData
 };
-use crate::events::{EventResponseParam};
+use crate::events::{
+    EventCountriesParam,
+    EventResponseParam,
+    EventTypesParam
+};
 use crate::finance::FinancePlatformItem;
 use crate::exchange::{ExchangesItem, ExchangesMarketItem, ExchangeRates};
 
@@ -208,9 +212,26 @@ impl CockoClient {
         Ok(coin_market_chart_data)
     }
 
+    /// Call 'coins/{id}/contract/{contract_address}' API
+    /// TODO: Beta status
+    ///
+    fn coins_with_id_with_contract_address(id: &str, contract_address: &str) -> Result<CoinsData, serde_json::Error> {
+        const COINS: &str = "/coins";
+        const MARKET_CHART: &str = "/contract";
+        let api = format!("{}{}/{}{}/{}", API_BASE_URL, COINS, id, MARKET_CHART, contract_address);
+        let mut res = reqwest::Client::new().get(&api).send().unwrap();
+
+        let mut body = String::new();
+        res.read_to_string(&mut body);
+        let coin_market_chart_data: CoinsData = serde_json::from_str(&body)?;
+        
+        Ok(coin_market_chart_data)
+    }
+
 
     /// Call '/exchanges'
-    ///
+    /// TODO: Beta status
+    /// 
     ///
     pub fn exchanges () -> Result<Vec<ExchangesItem>, serde_json::Error> {
         const EXCHANGES: &str = "/exchanges";
@@ -225,9 +246,9 @@ impl CockoClient {
     }
 
     /// Call '/exchanges/list'
+    /// TODO: Beta status
     ///
-    ///
-    pub fn exchange_list() -> Result<Vec<ExchangesMarketItem>, serde_json::Error> {
+    fn exchange_list() -> Result<Vec<ExchangesMarketItem>, serde_json::Error> {
         const EXCHANGES_LIST: &str = "/exchanges/list";
         let api = format!("{}{}", API_BASE_URL, EXCHANGES_LIST);
         let mut res = reqwest::get(&api).expect("Error on request");
@@ -265,8 +286,40 @@ impl CockoClient {
 
         res.read_to_string(&mut body);
         let events: EventResponseParam = serde_json::from_str(&body).unwrap();
-        println!("Event item 1: {:?}", events.data[0]);
+
         Ok(events)
+    }
+
+    /// Call '/events/countries'
+    ///
+    ///
+    pub fn events_countries() -> Result<EventCountriesParam, serde_json::Error> {
+        const EVENTS: &str = "/events";
+        const COUNTRIES: &str = "/countries";
+        let api = format!("{}{}{}", API_BASE_URL, EVENTS, COUNTRIES);
+        let mut res = reqwest::get(&api).expect("Error on request");
+        let mut body = String::new();
+
+        res.read_to_string(&mut body);
+        let events_countries: EventCountriesParam = serde_json::from_str(&body).unwrap();
+
+        Ok(events_countries)
+    }
+
+    /// Call '/events/types'
+    ///
+    ///
+    pub fn events_types() -> Result<EventTypesParam, serde_json::Error> {
+        const EVENTS: &str = "/events";
+        const TYPES: &str = "/types";
+        let api = format!("{}{}{}", API_BASE_URL, EVENTS, TYPES);
+        let mut res = reqwest::get(&api).expect("Error on request");
+        let mut body = String::new();
+
+        res.read_to_string(&mut body);
+        let events_countries: EventTypesParam = serde_json::from_str(&body).unwrap();
+        
+        Ok(events_countries)
     }
 
     /// Call '/finance_platforms'

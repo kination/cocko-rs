@@ -23,3 +23,21 @@ pub struct EventDataItem {
     pub country: String,
     pub screenshot: String
 }
+
+#[derive(Debug, Deserialize)]
+pub struct EventCountriesParam {
+    pub data: Vec<EventCountriesItem>,
+    pub count: i64
+}
+
+#[derive(Debug, Deserialize)]
+pub struct EventCountriesItem {
+    pub country: Option<String>,
+    pub code: Option<String>
+}
+
+#[derive(Debug, Deserialize)]
+pub struct EventTypesParam {
+    pub data: Vec<String>,
+    pub count: i32
+}

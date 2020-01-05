@@ -25,13 +25,13 @@ pub struct ExchangesMarketItem {
 
 #[derive(Debug, Deserialize)]
 pub struct ExchangeRates {
-    rates: HashMap<String, ExchangeRatesItem>
+    pub rates: HashMap<String, ExchangeRatesItem>
 }
 
 #[derive(Debug, Deserialize)]
 pub struct ExchangeRatesItem {
-    name: String,
-    unit: String,
-    value: f64,
-    r#type: String
+    pub name: String,
+    pub unit: String,
+    pub value: f64,
+    pub r#type: String
 }
