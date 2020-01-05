@@ -14,18 +14,18 @@ mod test_simple {
     #[test]
     fn call_events() {
         let _events: EventResponseParam = CockoClient::events().unwrap();
-        assert_eq!(_events.data.len() > 0, true);
+        assert_eq!(!_events.data.is_empty(), true);
     }
 
     #[test]
     fn call_events_countries() {
         let _events_countries: EventCountriesParam = CockoClient::events_countries().unwrap();
-        assert_eq!(_events_countries.data.len() > 0, true);
+        assert_eq!(!_events_countries.data.is_empty(), true);
     }
 
     #[test]
     fn call_events_types() {
         let _events_types: EventTypesParam = CockoClient::events_types().unwrap();
-        assert_eq!(_events_types.data.len() > 0, true);
+        assert_eq!(!_events_types.data.is_empty(), true);
     }
 }

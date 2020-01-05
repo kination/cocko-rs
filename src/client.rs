@@ -2,9 +2,9 @@ use std::io::Read;
 use std::collections::HashMap;
 
 use serde::{Deserialize};
-use serde_json::{Value};
 
-use crate::simple::CurrencyType;
+
+
 use crate::coins::{
     CoinsData, 
     CoinsHistoryData, 
@@ -49,7 +49,7 @@ impl CockoClient {
             Err(_error) => return Err(ErrorType::UNDEFINED)
         };
 
-        let ping_data = match res.json::<PingData>() {
+        let _ping_data = match res.json::<PingData>() {
             Ok(ping_data) => ping_data,
             Err(_error) => return Err(ErrorType::UNDEFINED)
         };
