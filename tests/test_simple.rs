@@ -12,7 +12,8 @@ mod test_simple {
         assert_eq!(_simple_price["01coin"].contains_key("btc"), true);
     }
 
-    #[test]
+    /// TODO: need address for test
+    // #[test]
     fn call_simple_token_price_by_id() {
         let address = "???";
         let vs_currency = "eth";

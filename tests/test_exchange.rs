@@ -9,6 +9,7 @@ mod test_simple {
     #[test]
     fn call_exchange_rates() {
         let _exchange_rates: ExchangeRates = CockoClient::exchange_rates().unwrap();
-        println!("_exchange_rates: {:?}", _exchange_rates.rates["btc"].name);
+        // println!("_exchange_rates: {:?}", _exchange_rates.rates["btc"].name);
+        assert_eq!(_exchange_rates.rates["btc"].name, "Bitcoin");
     }
 }

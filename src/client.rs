@@ -3,8 +3,6 @@ use std::collections::HashMap;
 
 use serde::{Deserialize};
 
-
-
 use crate::coins::{
     CoinsData, 
     CoinsHistoryData, 

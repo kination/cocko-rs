@@ -1,6 +1,9 @@
 use std::collections::HashMap;
+use std::fmt;
+use std::any::type_name;
 
-use serde::{Deserialize};
+use serde::{Deserialize, Deserializer};
+use serde::de::{self, Unexpected};
 
 #[derive(Debug, Deserialize)]
 pub struct CoinsListItem {
@@ -170,7 +173,8 @@ pub struct CommunityDataType {
     pub reddit_average_posts_48h: Option<f64>,
     pub reddit_average_comments_48h: Option<f64>,
     pub reddit_subscribers: Option<i64>,
-    pub reddit_accounts_active_48h: Option<String>,
+    #[serde(deserialize_with = "deserialize_u64_or_string")]
+    pub reddit_accounts_active_48h: u64,
     pub telegram_channel_user_count: Option<i64>
 }
 
@@ -216,10 +220,41 @@ pub struct TickersMarketType {
     pub has_trading_incentive: bool
 }
 
-/*
-fn deserialize_number_field<'de, D>(deserializer: D) -> Result<f64, D::Error>
-        where D: Deserializer<'de>,
-    {
-        // TODO
+struct DeserializeU64OrStringVisitor;
+
+impl<'de> de::Visitor<'de> for DeserializeU64OrStringVisitor {
+    type Value = u64;
+
+    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        formatter.write_str("an integer or a string")
     }
-*/
+
+    fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
+    where
+        E: de::Error,
+    {
+        Ok(v)
+    }
+
+    fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
+    where
+        E: de::Error,
+    {
+        Ok(v as u64)
+    }
+
+    fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+    where
+        E: de::Error,
+    {
+        let parsed: u64 = v.parse::<f64>().unwrap() as u64;
+        Ok(parsed)
+    }
+}
+
+fn deserialize_u64_or_string<'de, D>(deserializer: D) -> Result<u64, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    deserializer.deserialize_any(DeserializeU64OrStringVisitor)
+}
